@@ -852,7 +852,7 @@ class Gitlab(object):
         :param project_id: project id
         :param title: title of the issue
         :param description: issue description
-        :param comments: comments for issue
+        :param comments: comments for issue (string list)
         :param status: issue status ('close','reopen')
         :return: True/False
         """
@@ -868,13 +868,15 @@ class Gitlab(object):
         issue_id = issue["id"]
         # update issue status
         if status:
-            if not self.editissue(project_id=project_id, issue_id=issue_id, {"state_event": status}):
+            if not self.editissue(project_id=project_id, issue_id=issue_id, state_event=status):
                 return False
 
         # add comments
         for comment in comments:
             if not self.createissuewallnote(project_id=project_id, issue_id=issue_id, content=comment):
                 return False
+
+        return True
 
     def editissue(self, project_id, issue_id, **kwargs):
         """Edit an existing issue data

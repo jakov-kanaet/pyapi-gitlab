@@ -846,6 +846,35 @@ class Gitlab(object):
         else:
             return False
 
+    def createissuewithcomments(self, project_id, title, comments, status=None):
+        """
+
+        :param project_id: project id
+        :param title: title of the issue
+        :param comments: comments for issue
+        :param status: issue status ('close','reopen')
+        :return: True/False
+        """
+
+        data = {"id": id, "title": title}
+        # create issue
+        request = requests.post("{0}/{1}/issues".format(self.projects_url, project_id),
+                                headers=self.headers, data=data, verify=self.verify_ssl)
+        if request.status_code != 201:
+            return False
+
+        issue = request.json()
+        issue_id = issue["id"]
+        # update issue status
+        if status:
+            if not self.editissue(project_id=project_id, issue_id=issue_id, {"state_event": status}):
+                return False
+
+        # add comments
+        for comment in comments:
+            if not self.createissuewallnote(project_id=project_id, issue_id=issue_id, content=comment):
+                return False
+
     def editissue(self, project_id, issue_id, **kwargs):
         """Edit an existing issue data
 

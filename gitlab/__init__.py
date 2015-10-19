@@ -846,17 +846,18 @@ class Gitlab(object):
         else:
             return False
 
-    def createissuewithcomments(self, project_id, title, comments, status=None):
+    def createissuewithcomments(self, project_id, title, description, comments, status=None):
         """
 
         :param project_id: project id
         :param title: title of the issue
+        :param description: issue description
         :param comments: comments for issue
         :param status: issue status ('close','reopen')
         :return: True/False
         """
 
-        data = {"id": id, "title": title}
+        data = {"id": id, "title": title, "description": description}
         # create issue
         request = requests.post("{0}/{1}/issues".format(self.projects_url, project_id),
                                 headers=self.headers, data=data, verify=self.verify_ssl)
